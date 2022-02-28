@@ -1,8 +1,10 @@
-rule bwa_map:
-    input:
-        "data/genome.fa",
-        "data/samples/A.fastq"
-    output:
-        "mapped_reads/A.bam"
-    shell:
-        "bwa mem {input} | samtools view -Sb - > {output}"
+ rule hello:
+     output:'output.txt'
+     shell:'echo "Hello world">{output}'
+
+ rule World :
+         input : 'output.txt'
+         output : 'hello.txt'
+         shell :
+         'cat {input} > {output} | echo "Cette nouvelle ligne vient d\'être ajouter" >> {output}'
+
