@@ -1,0 +1,7 @@
+rule lecture_csv : 
+	input: 
+		"données/{données}.csv"
+	output: 
+		"données.txt"
+	shell: 
+		"python3 recup_lien.py {input} > {output}"
