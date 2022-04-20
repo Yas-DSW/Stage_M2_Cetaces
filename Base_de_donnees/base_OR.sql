@@ -1,8 +1,17 @@
 create database GROC;
 
+DROP type nvx CASCADE;
+DROP type cptm CASCADE;
+DROP type etats CASCADE;
+
+DROP table organisme CASCADE;
+DROP table assemblie CASCADE;
+DROP table experience CASCADE;
+DROP table gene CASCADE;
+
 create type nvx as enum ('Scaffold', 'complet'); 
 create type cptm as enum ('trés social','social', 'moyennement social','solitaire');
-create type etats as enum ('pseudogene','gene_fonctionnel');
+create type etats as enum ('Pseudogéne','Géne fonctionnel');
 
 create table organisme (
 espece varchar(100),
@@ -40,38 +49,38 @@ constraint fk_IDassembly foreign key (identifiant_assemblie) references assembli
 
 create table gene(
 nom text,
-famille int,
+famille varchar(10),
 etat etats,
 identifiant_assemblie varchar(200),
 ID_experience int,
 constraint pk_gene primary key(nom, identifiant_assemblie, ID_experience),
 constraint fk_identifiant foreign key (identifiant_assemblie) references assemblie(identifiant),
-constraint fk_ID_exp foreign key (ID_assemblie) references experience(ID)
+constraint fk_ID_exp foreign key (ID_EXPERIENCE) references experience(ID)
 );
 
 Create View Table_des_familles_de_genes_OR AS SELECT assemblie.genre, 
 assemblie.espece, 
 count(gene.*) as gènes,
-(SELECT count(*) as pseudogènes FROM gene WHERE gene.etat='pseudogene'), 
-(SELECT count(*) as gènes_fonctionnel FROM gene WHERE gene.etat='gene_fonctionnel'),
-(SELECT count(gene.*) as OR1 FROM gene WHERE gene.famille=1),
-(SELECT count(gene.*) as OR2 FROM gene WHERE gene.famille=2),
-(SELECT count(gene.*) as OR3 FROM gene WHERE gene.famille=3),
-(SELECT count(gene.*) as OR4 FROM gene WHERE gene.famille=4),
-(SELECT count(gene.*) as OR5 FROM gene WHERE gene.famille=5),
-(SELECT count(gene.*) as OR6 FROM gene WHERE gene.famille=6),
-(SELECT count(gene.*) as OR7 FROM gene WHERE gene.famille=7),
-(SELECT count(gene.*) as OR8 FROM gene WHERE gene.famille=8),
-(SELECT count(gene.*) as OR9 FROM gene WHERE gene.famille=9),
-(SELECT count(gene.*) as OR10 FROM gene WHERE gene.famille=10),
-(SELECT count(gene.*) as OR11 FROM gene WHERE gene.famille=11),
-(SELECT count(gene.*) as OR12 FROM gene WHERE gene.famille=12),
-(SELECT count(gene.*) as OR13 FROM gene WHERE gene.famille=13),
-(SELECT count(gene.*) as OR14 FROM gene WHERE gene.famille=14),
-(SELECT count(gene.*) as OR51 FROM gene WHERE gene.famille=51),
-(SELECT count(gene.*) as OR52 FROM gene WHERE gene.famille=52),
-(SELECT count(gene.*) as OR55 FROM gene WHERE gene.famille=55),
-(SELECT count(gene.*) as OR56 FROM gene WHERE gene.famille=56)
+(SELECT count(*) as Pseudogenes FROM gene WHERE gene.etat='Pseudogéne'), 
+(SELECT count(*) as Gene_fonctionnel FROM gene WHERE gene.etat='Géne fonctionnel'),
+(SELECT count(gene.*) as OR1 FROM gene WHERE gene.famille='OR1'),
+(SELECT count(gene.*) as OR2 FROM gene WHERE gene.famille='OR2'),
+(SELECT count(gene.*) as OR3 FROM gene WHERE gene.famille='OR3'),
+(SELECT count(gene.*) as OR4 FROM gene WHERE gene.famille='OR4'),
+(SELECT count(gene.*) as OR5 FROM gene WHERE gene.famille='OR5'),
+(SELECT count(gene.*) as OR6 FROM gene WHERE gene.famille='OR6'),
+(SELECT count(gene.*) as OR7 FROM gene WHERE gene.famille='OR7'),
+(SELECT count(gene.*) as OR8 FROM gene WHERE gene.famille='OR8'),
+(SELECT count(gene.*) as OR9 FROM gene WHERE gene.famille='OR9'),
+(SELECT count(gene.*) as OR10 FROM gene WHERE gene.famille='OR10'),
+(SELECT count(gene.*) as OR11 FROM gene WHERE gene.famille='OR11'),
+(SELECT count(gene.*) as OR12 FROM gene WHERE gene.famille='OR12'),
+(SELECT count(gene.*) as OR13 FROM gene WHERE gene.famille='OR13'),
+(SELECT count(gene.*) as OR14 FROM gene WHERE gene.famille='OR14'),
+(SELECT count(gene.*) as OR51 FROM gene WHERE gene.famille='OR51'),
+(SELECT count(gene.*) as OR52 FROM gene WHERE gene.famille='OR52'),
+(SELECT count(gene.*) as OR55 FROM gene WHERE gene.famille='OR55'),
+(SELECT count(gene.*) as OR56 FROM gene WHERE gene.famille='OR56')
 FROM gene,assemblie 
 WHERE (gene.identifiant_assemblie=assemblie.identifiant)
 GROUP BY assemblie.espece, assemblie.genre;

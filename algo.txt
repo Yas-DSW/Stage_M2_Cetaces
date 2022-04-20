@@ -1,0 +1,48 @@
+Entrée : Table Assemblie, Experience, Géne, Liste de listes de gènes (LL)
+Sortie : Table Assemblie, Experience, Géne remplies
+
+
+Liste_esp=[]
+
+for liste in LL :
+	if liste.assemblie not in Assemblie: 
+		Fillrow(assemblie)
+
+	esp=Assemblie.column["espece"]
+	Ass=Assemblie.column["ID"]
+
+	Fillrow(experience)
+
+	if esp not in liste_esp:
+		for seq in liste:
+			Fillrow(gene)
+
+	else : 
+		for seq in liste : 
+			croisement=cross(Géne; Assemblie) where espece=esp (AND ID != Ass)
+
+		i=0
+		While i <= len(croisement) :
+			if i< len(croisement):
+				seqrow=row.seq
+				percent=(compare(seq,seqrow)
+				if percent >=98 : 
+					id=row.ref
+					for row in Géne: 
+						if row.ref=id:
+							row exemplaire +=1
+							exemplaire =row.exemplaire
+						if seq.famille=row.famille:
+							fam=seq.famille
+						else:
+							fam =-1 #### peut être remplacer par -(seq.fam)
+
+					Fillrow(gene, gene.exemplaire=exemplaire, gene.famille=fam, gene.ref = id , sim=percent)
+					i=len(croisement)+1
+				elif i=len(croismeent): 
+					Fillrow(gene)
+				else : 
+					i+=1
+
+
+
