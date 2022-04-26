@@ -11,7 +11,7 @@ DROP table gene CASCADE;
 
 create type nvx as enum ('Scaffold', 'complet'); 
 create type cptm as enum ('trés social','social', 'moyennement social','solitaire');
-create type etats as enum ('Pseudogéne','Géne fonctionnel');
+create type etats as enum ('pseudogéne','fonctionnel');
 
 create table organisme (
 espece varchar(100),
@@ -51,6 +51,8 @@ create table gene(
 nom text,
 famille varchar(10),
 etat etats,
+début int,
+fin int,
 identifiant_assemblie varchar(200),
 ID_experience int,
 constraint pk_gene primary key(nom, identifiant_assemblie, ID_experience),
