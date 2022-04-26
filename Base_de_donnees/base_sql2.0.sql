@@ -1,14 +1,3 @@
-create database GROC;
-
-DROP type nvx CASCADE;
-DROP type cptm CASCADE;
-DROP type etats CASCADE;
-
-DROP table organisme CASCADE;
-DROP table assemblie CASCADE;
-DROP table experience CASCADE;
-DROP table gene CASCADE;
-
 create type nvx as enum ('Scaffold', 'complet'); 
 create type cptm as enum ('trés social','social', 'moyennement social','solitaire');
 create type etats as enum ('pseudogéne','fonctionnel');
@@ -34,32 +23,40 @@ base_de_donnee varchar(100),
 date_de_publication date,
 niveau_assemblage  nvx,
 constraint pk_assemblie primary key (identifiant),
-constraint fk_esp_gen foreign key (espece, genre) references organisme(espece, genre) 
+constraint fk_esp foreign key (espece,genre) references organisme(espece,genre)
 );
 
 
 create table experience(
 ID SERIAL,
-identifiant_assemblie varchar(200),
 pipeline varchar(200),
-Parametre text,
-constraint pk_experience primary key (ID),
-constraint fk_IDassembly foreign key (identifiant_assemblie) references assemblie(identifiant)
+paramétres text,
+constraint pk_experience primary key (ID)
 );
 
 create table gene(
-nom text,
+ID SERIAL,
+Nom text,
 famille varchar(10),
 etat etats,
 début int,
 fin int,
-identifiant_assemblie varchar(200),
-ID_experience int,
-constraint pk_gene primary key(nom, identifiant_assemblie, ID_experience),
-constraint fk_identifiant foreign key (identifiant_assemblie) references assemblie(identifiant),
-constraint fk_ID_exp foreign key (ID_EXPERIENCE) references experience(ID)
+sequence text,
+reference int,
+constraint pk_gene primary key(ID)
 );
 
+create table link(
+ID_assemblie varchar(200),
+ID_experience int,
+ID_gene int,
+constraint pk_link primary key ( ID_assemblie, ID_experience, ID_gene),
+constraint fk_link_assemblie foreign key (ID_assemblie) references assemblie(identifiant),
+constraint fk_link_experience foreign key (ID_experience) references experience(ID),
+constraint fk_link_gene foreign key (ID_gene) references gene(ID)
+);
+
+/*
 Create View Table_des_familles_de_genes_OR AS SELECT assemblie.genre, 
 assemblie.espece, 
 count(gene.*) as gènes,
@@ -85,4 +82,4 @@ count(gene.*) as gènes,
 (SELECT count(gene.*) as OR56 FROM gene WHERE gene.famille='OR56')
 FROM gene,assemblie 
 WHERE (gene.identifiant_assemblie=assemblie.identifiant)
-GROUP BY assemblie.espece, assemblie.genre;
+GROUP BY assemblie.espece, assemblie.genre;*/

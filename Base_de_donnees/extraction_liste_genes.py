@@ -2,6 +2,7 @@
 
 from Bio import SeqIO
 import sys
+import csv
 
 #Afin de fonctionner ce programme necessite en entrée le nom (si le fichier se trouve dans le même dossier) ou le chemin des fichier suivants dans l'ordre indiqué : 
 #			1) L'identifiant de l'assemblage déja rentré dans la table assemblage entre guillemet
@@ -11,20 +12,44 @@ import sys
 #			5) la table croisement au format CSV 
 #			6) la liste des gènes trouvés au format fasta
 
+######################################################################### Définition des fonctions##############################################################################
+
+def table_to_list(table, liste) :
+	f=open (table, 'r')
+	fichier=csv.reader(f)
+	for row in fichier:
+		liste.append(row)
+
+# def sim(gene_sequence,row_sequence) : 
+								
+
+
+
 ######################################################################### Récupération des données d'entrées ########################################################################################################
-assemblie = sys.argv[1]
-experience= sys.argv[2]
+# assemblie_ID = sys.argv[1]
+# experience_ID= sys.argv[2]
+
 table_gene=sys.argv[3]
 table_link=sys.argv[4]
-table_croisement=sys.argv[5]
+table_croisement=sys.argv[2]
 
-###### Conversion de la table croisement en liste ############# 
+croisement=[]
+tbl_gene=[]
+tbl_link=[]
 
+###### Initialisation: conversion des tables en liste de listes ############# 
+
+table_to_list(table_croisement, croisement)
+print(croisement)
+table_to_list(table_gene, tbl_gene)
+print(tbl_gene)
+table_to_list(table_link,tbl_link)
+print(tbl_link)
 
 
 ########## Extraction des gènes sous forme de liste ###########
 
-multi_fasta=sys.argv[6]
+multi_fasta=sys.argv[1]
 liste_gene=[]
 
 for record in SeqIO.parse(multi_fasta,"fasta"): ### on utilise SeqIO de Biopython pour parcourir les séquences contenu dans les multifasta
@@ -51,9 +76,25 @@ for record in SeqIO.parse(multi_fasta,"fasta"): ### on utilise SeqIO de Biopytho
 ######################################################################### Début de l'algorithme ########################################################################################################
 
 for gene in liste_gene:
+	print(gene)
 	id_max=0
 	sim_max=0
 	for row in croisement : 
-		if sim (ro)
+		similarite=sim(gene,row)
+
+		if similarite>98 :
+			sim_max=similarite
+			id_max=row[2]
+	if sim_max>98:
+		referenced_gene=gene
+		referenced_gene[-1]=id_max #### ici on écrit l'ID de la séquence de référence dans la table gène 
+		tbl_gene.append(gene)
+		tbl_link.append([assemblie_ID, experience_ID, referenced_gene]) #####Possiblement ici utiliser un transtypage
+	else:
+		non_referenced_gene=gene
+		non_referenced_gene[-1]=n
+
+
+
 
 
