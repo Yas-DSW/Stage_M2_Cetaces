@@ -1,4 +1,4 @@
-###########matrice############
+###########matrix############
 import numpy
 
 
@@ -6,11 +6,10 @@ import numpy
 seq1='CGTAGCTT'
 seq2='AGGCT'
 match=2
-missmatch=-2
-gap_int=-1
-gap_ext=0
+missmatch=-1
+gap=0
 
-def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int):
+def matrice(seq1,seq2,match,missmatch,gap):
 	global n
 	n=len(seq1)
 	global m
@@ -22,32 +21,19 @@ def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int):
 	mat[0,0]=0
 	
 
-	for i in range (1,m+1) :mat[i,0]=mat[i-1,0]+gap_ext #remplissage de la première ligne
-	for j in range(1, n+1) :mat[0,j]=mat[0,j-1]+gap_ext #remplissage de la première colonne
+	for i in range (1,m+1) :mat[i,0]=mat[i-1,0]+gap #remplissage de la première ligne
+	for j in range(1, n+1) :mat[0,j]=mat[0,j-1]+gap#remplissage de la première colonne
 
 	#Remplissage de la matrice 
 	for j in range(1,n+1) :
 		for i in range (1,m+1) :
 			if (seq1[j-1]==seq2[i-1]):diag=(mat[i-1,j-1]+match) #match
-			else : diag=(mat[i-1,j-1]+ missmatch)
-
-
-			if i==(m):
-				print("if")
-				vert=(mat[i,j-1]+gap_ext)
-			else :
-				print("else")
-				vert=(mat[i,j-1]+gap_int)
-
-			if j==(n):
-				print("if2")
-				horz=(mat[i-1,j]+gap_ext)
-			else : 
-				print("else2")
-				horz=(mat[i-1,j]+gap_int)
-
+			else : diag=(mat[i-1,j-1]+missmatch)
+			horz=(mat[i-1,j]+gap)
+			vert=(mat[i,j-1]+gap)
 			if (diag>=horz and diag>=vert):mat[i,j]=diag
 			elif (horz>= diag and horz>=vert):mat[i,j]=horz
+	
 			else:mat[i,j]=vert
 	
 	global score
@@ -67,9 +53,9 @@ def similarite():
 
 	return similarite
 
-def comparaison(seq1,seq2,match,missmatch,gap_ext, gap_int):
-	matrice(seq1,seq2,match,missmatch,gap_ext, gap_int)
+def comparaison(seq1,seq2,match,missmatch,gap):
+	matrice(seq1,seq2,match,missmatch,gap)
 	pourcentage=similarite()
 	print(pourcentage)
 
-comparaison(seq1,seq2,match,missmatch,gap_ext, gap_int)
+comparaison(seq1,seq2,match,missmatch,gap)
