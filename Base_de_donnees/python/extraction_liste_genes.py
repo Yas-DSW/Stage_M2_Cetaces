@@ -51,6 +51,7 @@ print(tbl_link)
 
 multi_fasta=sys.argv[1]
 liste_gene=[]
+identifiant=1
 
 for record in SeqIO.parse(multi_fasta,"fasta"): ### on utilise SeqIO de Biopython pour parcourir les séquences contenu dans les multifasta
 	header=str(record.id) # La plupart des informations sur le géne sont contenues dans le header. On récupére celui-ci dans un format simple a manipuler par la suite. 
@@ -65,8 +66,13 @@ for record in SeqIO.parse(multi_fasta,"fasta"): ### on utilise SeqIO de Biopytho
 	liste_position= position[1].split("-")
 	start=liste_position[0]
 	end=liste_position[1]
+	if len(tbl_gene)=1:
+		id_gene=identifiant
+		identifiant+=1
+	else :
+		id_gene=int(tbl_gene[len(tbl_gene)-1]+1)
 
-	gene=["",nom,famille,etat,int(start),int(end),str(record.seq),"Géne OR","" ]
+	gene=[id_gene,nom,famille,etat,int(start),int(end),str(record.seq),"Géne OR","" ]
 	liste_gene.append(gene)
 
 # print(liste_gene[1])  
@@ -89,10 +95,15 @@ for gene in liste_gene:
 		referenced_gene=gene
 		referenced_gene[-1]=id_max #### ici on écrit l'ID de la séquence de référence dans la table gène 
 		tbl_gene.append(gene)
-		tbl_link.append([assemblie_ID, experience_ID, referenced_gene]) #####Possiblement ici utiliser un transtypage
+		tbl_link.append([assemblie_ID, experience_ID, referenced_gene[0]]) #####Possiblement ici utiliser un transtypage pour referenced gene (selon la base de données)
 	else:
 		non_referenced_gene=gene
-		non_referenced_gene[-1]=n
+		non_referenced_gene[-1]= non_referenced_gene[0]
+		tbl_gene.append(gene)
+		tbl_link.append([assemblie_ID, experience_ID, non_referenced_gene[0]])
+		croisement.append([assemblie_ID, experience_ID, non_referenced_gene[0],non_referenced_gene[0]]) 
+
+
 
 
 
