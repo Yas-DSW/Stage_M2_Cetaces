@@ -10,6 +10,7 @@ missmatch=-1
 gap=0
 
 def matrice(seq1,seq2,match,missmatch,gap):
+	
 	global n
 	n=len(seq1)
 	global m
