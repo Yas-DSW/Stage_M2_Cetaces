@@ -3,6 +3,7 @@
 from Bio import SeqIO
 import sys
 import csv
+import matrice,backtracking,calcul_similarité
 
 #Afin de fonctionner ce programme necessite en entrée le nom (si le fichier se trouve dans le même dossier) ou le chemin des fichier suivants dans l'ordre indiqué : 
 #			1) L'identifiant de l'assemblage déja rentré dans la table assemblage entre guillemet
@@ -20,10 +21,16 @@ def table_to_list(table, liste) :
 	for row in fichier:
 		liste.append(row)
 
-# def sim(gene_sequence,row_sequence) : 
-								
-
-
+def sim(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) : 
+	matrice.matrice(seq1,seq2,match,missmatch,gap_ext,gap_int)
+	backtracking.backtracking(seq1,seq2,gap_int,gap_ext,match,missmatch)
+	calcul_similarité.similarite()
+	return calcul_similarité.similarite
+######################################################################### Définition des paramètres de l'alignement#############################################################
+match=2
+missmatch=-2
+gap_int=-1
+gap_ext=0
 
 ######################################################################### Récupération des données d'entrées ########################################################################################################
 # assemblie_ID = sys.argv[1]
@@ -86,12 +93,12 @@ for gene in liste_gene:
 	id_max=0
 	sim_max=0
 	for row in croisement : 
-		similarite=sim(gene,row)
+		similarite=sim(gene[7],row)
 
-		if similarite>98 :
+		if similarite>= 0.98 :
 			sim_max=similarite
 			id_max=row[2]
-	if sim_max>98:
+	if sim_max>0.98:
 		referenced_gene=gene
 		referenced_gene[-1]=id_max #### ici on écrit l'ID de la séquence de référence dans la table gène 
 		tbl_gene.append(gene)

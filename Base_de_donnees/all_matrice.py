@@ -1,16 +1,16 @@
-###########matrice############
+########### Construction de la matrice ################
 import numpy
 
 
 ####"initialisation des valeurs choisies
-seq1='''ATGGCTATAGGAAACTGGACAGAAATAAGTGAATTTATCCTCATGAGCTTCTCTTCCCTACCTACTGAAATACAGTCATTGCTCTTCCTGACATTTCTAACTATCTATTTGGTTACTCTGAAGGGAAACAGCCTCATCATTCTGGTTACCCTAGCTGACCCCATGCTACACAGCCCCATGTACTTCTTCCTCAGAAACTTATCTTTCCTGGAGATTGGCTTCAACCTAGTCATTGTGCCCAAAATGCTGGGGACCCTGCTTGCCCAGGACACAACCATCTCCTTCCTTGGCTGTGCCACTCAGATGTATTTCTTCTTCTTCTTTGGGGTAGCTGAATGCTTCCTCCTGGCTACCATGGCATATGACCGCTATGTGGCCATCTGCAGTCCCTTGCACTACCCAGTCATCATGAACCAAAGGACACGGGCCAAACTGGCTGCTGCTTCCTGGTTCCCAGGCTTTCCTGTAGCTACTGTGCAGACCACATGGCTCTTCAGTTTTCCATTCTGTGGCACCAACAAGGTGAACCACTTCTTCTGTGACAGCCCGCCTGTGCTGAAGCTGGTCTGTGCAGACACAGCACTGTTTGAGATCTACGCCATCGTCGGAACCATTCTGGTGGTCATGATCCCCTGCTTGCTGATCTTGTGTTCCTATACTCGCATTGCTGCTGCTATCCTCAAGATCCCATCAGCTAAAGGGAAGCATAAAGCCTTCTCTACGTGCTCCTCACACCTCCTTGTTGTCTCTCTTTTCTATATATCTTCTAGCCTCACCTACTTCTGGCCTAAATCAAATAATTCTCCTGAGAGCAAGAAGTTGTTATCATTATCCTACACTGTTGTGACTCCCATGTTGAACCCCATTATCTACAGCTTGAGAAATAGCGAGGTGAAGAATGCCCTCAGCAGGACCTTCCACAAGGTCCTAGCCCTCAGAAACTGTATCCCA'''
-seq2='''ATGAAAAGACAAAATCAAAGCTGTGTGGTTGAATTCATCCTCCTGGGCTTTTCTAACTTTCCTGAGCTCCAGGTGCAGCTCTTTGGGGTTTTCCTAGTTATTTATGTGGTGACCCTGATGGGAAATGCCATCATTACAGTCATCATCTCCTTAAACCAGAGCCTCCACGTTCCCATGTACCTGTTCCTCCTGAACCTATCTGTGGTGGAGGTGAGTTTCAGTGCAGTCATTACGCCTGAAATGCTGGTGGTGCTCTCTACTGAGAAAACTATGATTTCTTTTGTGGGCTGTTTTGCACAGATGTATTTCATCCTTCTTTTTGGTGGGACTGAATGTTTTCTCCTGGGAGCGATGGCTTATGACCGATTTGCTGCAATTTGCCATCCTCTGAACTACCCAGTGATTATGAACAGAGGGGTTTTTATGAAATTAGTAATATTCTCATGGATCTCAGGGATCATGGTGGCTACTGTGCAGACCACTTGGGTATTTAGTTTTCCATTTTGTGGCCCCAATGAAATTAATCATCTCTTCTGTGAGACTCCCCCGGTACTAGAGCTTGTGTGTGCAGACACCTTCTTATTTGAAATCTATGCCTTCACAGGCACCATTTTGATTGTTATGGTTCCTTTCTTGTTGATCCTCTTGTCTTACATTCGAGTTCTGTTTGCCATCCTGAAGATGCCATCAACTACTGGGAGACAAAAGGCCTTTTCCACCTGTGCCTCTCACCTCACATCTGTGACCCTGTTCTATGGCACAGCCAATATGACTTATTTACAACCCAAATCTGGCTACTCACCCGAAACCAAGAAACTGATCTCATTGGCTTACACGTTGCTTACCCCTCTGCTCAATCCGCTCATCTATAGCTTACGAAACAGTGAGATGAAGAGGACTTTGATAAAACTATGGCGAAGAAAAGTGATTTTACACACATTC'''
+seq1='''ACGTACGTGCAGTGACTGACACCACACGTGGCCAGTGACT'''
+seq2='''ACGTGGCAGTAGAGACGATGAGACCCCAGTAGTGATGATGAGATG'''
 match=2
 missmatch=-2
 gap_int=-1
 gap_ext=0
 
-def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int):
+def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int):##### Fonction permettant de construire la matrice de score nécessaire à  l'alignement.
 	global n
 	n=len(seq1)
 	global m
@@ -44,6 +44,7 @@ def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int):
 			if (diag>=horz and diag>=vert):mat[i,j]=diag
 			elif (horz>= diag and horz>=vert):mat[i,j]=horz
 			else:mat[i,j]=vert
+	print(mat)
 	
 def match_or_missmatch(a,b):
 	cout_m=0
@@ -65,7 +66,6 @@ def backtracking(seq1,seq2):
 	global seq2_aff
 	seq2_aff=""
 	
-	print(mat)
 	
 	while i > 0 or j > 0:
 		if i == 0 or i == m:
@@ -78,30 +78,20 @@ def backtracking(seq1,seq2):
 			gap_ver=gap_int
 
 		if (i>0 and j>0 and mat[i,j]==mat[i-1,j-1] + match_or_missmatch(a,b)):
-			# print(seq1[b])
-			# print(seq2[a])
-			print("---------------------\n","case:",mat[i,j])
 			seq1_aff=seq1[b]+seq1_aff
 			seq2_aff=seq2[a]+seq2_aff
-			# print("seq1 :", seq1_aff)
-			# print("seq2 :", seq2_aff)
 			if (match_or_missmatch(a, b) == match):
-				print("match","\n-----------------")
 				nb_match+=1
-			else:
-				print("missmatch","\n-----------------")	
 			if a>0:
 				a=a-1
 			if b>0:
 				b=b-1
 			i=i-1
 			j=j-1 
-			print(nb_match)
 			
 			
 			#gap &vert
 		elif (i>0 and mat[i,j]==mat[i-1,j]+ gap_ver) :
-			print("là")
 			seq1_aff=("-")+seq1_aff
 			seq2_aff=seq2[a]+seq2_aff
 			if a>0:
@@ -109,18 +99,18 @@ def backtracking(seq1,seq2):
 			i=i-1
 		#gap & horz
 		elif (j>0 and mat[i,j]==mat[i,j-1]+gap_horz):
-			print("ici")
-			print("seq1_aff", seq1_aff)
 			seq1_aff=(seq1[b])+seq1_aff
 			seq2_aff=("-")+seq2_aff
-			print("seq2_aff", seq2_aff)
 			if b>0:
 				b=b-1	
 			j=j-1
+	print("nb match :", nb_match)
+	print("seq1_aff:", seq1_aff)
+	print("seq2_aff:", seq2_aff)
 
-	print(seq1_aff)
-	print(seq2_aff)
-	print(nb_match)
+	# print(seq1_aff)
+	# print(seq2_aff)
+	# print(nb_match)
 
 		# 	#found on github:
 		# rev_seqn2=seqn2[::-1]
@@ -211,7 +201,7 @@ def similarite():
 		longueur=len(seq1_aff)
 	else: 
 		longueur=len(seq2_aff)
-
+	print("longueur :", longueur)
 	similarite=nb_match/longueur
 
 	return similarite
