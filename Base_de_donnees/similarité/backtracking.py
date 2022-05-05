@@ -9,7 +9,7 @@ def match_or_missmatch(a,b,seq1,seq2,match,missmatch):
 	return (cout_m)
 
 def backtracking(seq1,seq2, gap_int,gap_ext,match,missmatch,id_gene1,id_gene2):
-	print("début de l'étape de backtracking entre "+)
+	print("début de l'étape de backtracking entre "+  id_gene1 + " et " + id_gene2 +" ...")
 	i=len(seq2)
 	j=len(seq1)
 	a=i-1
@@ -60,6 +60,4 @@ def backtracking(seq1,seq2, gap_int,gap_ext,match,missmatch,id_gene1,id_gene2):
 			if b>0:
 				b=b-1	
 			j=j-1
-	print("nb_match backtracking: ", nb_match)
-	print("seq1_aff:", seq1_aff)
-	print("seq2_aff:", seq2_aff)
+	print("backtracking terminé !")

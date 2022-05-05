@@ -1,6 +1,6 @@
 import numpy
 def matrice(seq1,seq2,match,missmatch,gap_ext, gap_int,id_gene1,id_gene2):##### Fonction permettant de construire la matrice de score nécessaire à  l'alignement.
-	print ("Construction de la matrice d'alignement pour :" + id_gene1 + " et " + id_gene2 +" ...")
+	print ("Construction de la matrice d'alignement pour : " + id_gene1 + " et " + id_gene2 +" ...")
 	global n
 	n=len(seq1)
 	global m
