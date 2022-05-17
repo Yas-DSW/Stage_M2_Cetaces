@@ -2,7 +2,7 @@ Entrée : Table Assemblie, Experience, Géne, Liste de listes de gènes (LL)
 Sortie : Table Assemblie, Experience, Géne remplies
 
 
-Liste_esp=[]
+liste_esp=[]
 
 for liste in LL :
 	if liste.assemblie not in Assemblie: 
@@ -13,19 +13,19 @@ for liste in LL :
 
 	Fillrow(experience)
 
-	if esp not in liste_esp:
+	if esp not in liste_esp:  #### Checher si le géne est déja dans la table : rajouter un champs dans la table organisme
 		for seq in liste:
 			Fillrow(gene)
 
 	else : 
 		for seq in liste : 
-			croisement=cross(Géne; Assemblie) where espece=esp (AND ID != Ass)
+			croisement=cross(Géne; Assemblie) where espece=esp  #### prendre que les génes de référence
 
 		i=0
 		While i <= len(croisement) :
 			if i< len(croisement):
-				seqrow=row.seq
-				percent=(compare(seq,seqrow)
+				seqrow=row[i].seq
+				percent=(compare(seq,seqrow))
 				if percent >=98 : 
 					id=row.ref
 					for row in Géne: 
@@ -46,3 +46,5 @@ for liste in LL :
 
 
 
+### Rajouter le nombre d'experience dans organisme
+### supprimer de gene 
