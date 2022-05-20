@@ -1,5 +1,6 @@
 import matrice
 
+
 def match_or_missmatch(a,b,seq1,seq2,match,missmatch):
 	cout_m=0
 	if (seq1[b]==seq2[a]):
@@ -60,4 +61,5 @@ def backtracking(seq1,seq2, gap_int,gap_ext,match,missmatch,id_gene1,id_gene2):
 			if b>0:
 				b=b-1	
 			j=j-1
-	print("backtracking terminé !\n")
+
+

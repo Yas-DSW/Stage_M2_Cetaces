@@ -4,18 +4,50 @@
 # par Aurélie Célérier et Sylvia Campagna. Il permet de lancer les programmes d'implémentation de la base de données associée au projet.
 
 from Bio import SeqIO
+from Bio import pairwise2
 import re
 import sys
 import psycopg2 
-import matrice,backtracking,calcul_similarité
+# import matrice,backtracking,calcul_similarité
+import random
+from datetime import datetime 
 
-  
+def my_format_alignment(align1, align2, score, begin, end): ## Code inspirée de Bastien Hervé sur https://www.biostars.org/p/370710/
+    s = [score] 
+    match=0
+    for a, b in zip(align1[begin:end], align2[begin:end]): 
+        if a == b:  
+            match+=1
+    s.append(match)
+    return s ### Retourne une liste [score, match]
 
-def sim(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) : ### Définition de la fonction de calcul du pourcentage de similarité entre deux séquences
-	matrice.matrice(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) #### Calcul de la matrice de score entre les deux séquences
-	backtracking.backtracking(seq1,seq2,gap_int,gap_ext,match,missmatch,id_gene1,id_gene2) ### Etape de backtracking permettant de connaitre le nombre de match 
-	pourc=calcul_similarité.similarite(id_gene1,id_gene2) ### Calcul de la similarité entre les sséquence (score pondéré par la longueur)
-	return pourc
+def align(seq1, seq2, open_gap, extend_gap ):
+	score = pairwise2.align.globalxs(seq1, seq2,open_gap,extend_gap,penalize_end_gaps=(False,False), score_only=True)
+	return my_format_alignment(score)
+
+
+
+
+
+
+# def sim(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) : ### Définition de la fonction de calcul du pourcentage de similarité entre deux séquences
+# 	now =datetime.now()
+# 	current_time=now.strftime("%H:%M:%S")
+# 	print("Curent time matrice begin :", current_time)
+# 	matrice.matrice(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) #### Calcul de la matrice de score entre les deux séquences
+# 	now =datetime.now()
+# 	current_time=now.strftime("%H:%M:%S")
+# 	print("Curent time matrice end:", current_time)
+# 	now =datetime.now()
+# 	current_time=now.strftime("%H:%M:%S")
+# 	print("Curent time  start backtracking:", current_time)
+# 	backtracking.backtracking(seq1,seq2,gap_int,gap_ext,match,missmatch,id_gene1,id_gene2) ### Etape de backtracking permettant de connaitre le nombre de match
+# 	print("backtracking terminé !\n")
+# 	now =datetime.now()
+# 	current_time=now.strftime("%H:%M:%S")
+# 	print("Curent time backtracking end :", current_time) 
+# 	pourc=calcul_similarité.similarite(id_gene1,id_gene2) ### Calcul de la similarité entre les sséquence (score pondéré par la longueur)
+# 	return pourc
 
 
 
@@ -88,6 +120,7 @@ def completion_gene(tableau_gene,connection,experience_ID,espece, assemblie_ID):
 		print("Traitement du géne : ", gene[1], " Assemblage : "+ assemblie_ID + "\n")
 		id_max=0
 		sim_max=0
+		length=len(gene)
 		print("Construction/mise à jour de la table croisement \n")
 		requete_croisement=f"SELECT distinct link.ID_experience,link.ID_gene, gene.nom, gene.sequence, gene.reference FROM link,gene,assemblie WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='{espece}') AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) AND link.ID_gene=gene.ID AND assemblie.identifiant=link.id_assemblie;"
 		cur.execute(requete_croisement)
@@ -95,10 +128,17 @@ def completion_gene(tableau_gene,connection,experience_ID,espece, assemblie_ID):
 
 		for row in table_croisement[1:]:# Parcours des gènes de références
 			bd_sequence=re.sub("(\s+)","",row[-2])### élimination des caractéres invisibles pouvant êre contenu dans les séquences importés depuis la base. 
-			pourcentage=sim(gene[7],row[-2],match,missmatch,gap_ext,gap_int,gene[1],row[2]) ## Calcul de la similarité entre le géne testé et les références de la base. 
-			if pourcentage > sim_max :
-				sim_max=pourcentage
-				id_max=row[1]
+			# pourcentage=random.randrange(98,100)
+			score_align=align( gene, row , -1 ,-1)
+			if score_align[0] > score_max:
+				score_max=score_align[0]
+				nb_match=score_align[1]
+
+		sim_max=nb_match/length
+			# pourcentage=sim(gene[7],row[-2],match,missmatch,gap_ext,gap_int,gene[1],row[2]) ## Calcul de la similarité entre le géne testé et les références de la base. 
+			# if pourcentage > sim_max :
+			# 	sim_max=pourcentage
+			# 	id_max=row[1]
 		if sim_max>98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
 			gene[-1]=id_max
 			gene=tuple(gene)
