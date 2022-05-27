@@ -16,7 +16,7 @@ import multifasta_to_bd, OA_to_BD
 
 nom_complet=sys.argv[1] ### Récupération du nom de l'assemblage
 
-BD=sys.argv[2] ## Récupération de la base de données sur laquelle les données ont été traitées
+BD=sys.argv[2] ## Récupération de la base de données sur laquelle les données ont été trouvées
 esp_genre=nom_complet.split("_")
 
 espece=esp_genre[1]

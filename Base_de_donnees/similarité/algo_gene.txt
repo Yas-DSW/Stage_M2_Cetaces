@@ -1,0 +1,66 @@
+
+
+############################## Version interaction permanente avec la base de donnée #################################
+
+
+Entrées: tableau des gènes du multifasta tmf, ID de l'experience ID_exp, espèce, assemblie_ID
+
+ 
+Variables :  liste de chaines de caractères: to_add_gene, to_add_link
+liste d'entiers :score_nbmatch
+liste de tuple : tc
+integer : id max, score_max,length_test, nb_match_max
+string : ID_gr
+
+
+Récupération des informations relatives à tous les génes référents appartenant à une espèce dans une liste de tuple tc. 
+
+ tc= SELECT distinct gene.ID_gene,gene.sequence, FROM link,gene,assemblie WHERE .ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='{espece}') AND .ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) AND .ID_gene=gene.ID AND assemblie.identifiant=.id_assemblie;
+		
+		requete_croisement=f"SELECT distinct link.ID_gene, gene.sequence FROM link,gene,assemblie WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='{espece}') AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) AND link.ID_gene=gene.ID AND assemblie.identifiant=link.id_assemblie;" ## verifier si les deux dernières conditions sont nécessaires
+
+
+Pour chaque gt de tmf :
+	id_max=0
+	score_max=0
+	length_test=longueur(gt)
+
+	Pour chaque gr de tc :
+		score_nbmatch=align(gt,gr,-1,-1) 
+		Si score_nbmatch[0]>score_max:
+			score_max=score_nbmatch[0]
+			nb_match_max=score_nbmatch[1]
+			ID_gr_max=gr.id
+		Fin Si
+	Fin Pour
+
+	sim_max=nb_match_max/length_test
+
+	Si sim_max> 0.98:
+
+		Ajout du tuple (ID,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,ID_gr_max) à to_add_gene ### récupérer l'ID en amont
+
+	Sinon:
+		Ajout du tuple (ID,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,ID) à to_add_gene
+		Ajout du tuple (ID,gt.sequence) à tc
+	
+	Ajout du tuple (assemblie_ID, experience_ID,ID) à to_add_link
+	ID+=1
+Fin Pour
+
+Ajout de to_add_gene dans la table gene
+Ajout de to added_link dans la table link
+
+
+#### Diagramme avec les données entrées et sorties
+
+	
+
+
+
+
+
+
+
+
+

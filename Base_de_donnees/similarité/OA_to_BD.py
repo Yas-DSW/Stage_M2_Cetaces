@@ -19,20 +19,12 @@ def completion_organisme(espece,genre,connection):
 		liste_espece.append(row[0])
 
 	#complétion
-	if len(BD_specie)==0:#### Liste vide = initialisation de la table 
+	if len(BD_specie)==0 or espece not in liste_espece :#### Liste vide ou espèce pas dans la table = ajout 
 		specie_row='('+ '\''+espece+'\''+ ',' + '\''+genre+'\''+ ',NULL ,NULL ,NULL ,NULL , NULL ,NULL)'
 		requete="INSERT INTO organisme VALUES "+ specie_row
 		cur.execute(requete)
 		print("\n Nouvelle espèce ajoutée !")
 		connection.commit() ### Ajout des modifications sur la base
-	else:
-		if espece not in liste_espece :
-			# print("\nnot in list")
-			specie_row='('+ '\''+espece+'\'' + ',' + '\''+genre+'\''+ ',NULL ,NULL ,NULL ,NULL , NULL ,NULL)'
-			requete="INSERT INTO organisme VALUES "+ specie_row
-			cur.execute(requete)
-			print("\n Nouvelle espèce ajoutée !")
-			connection.commit() ### Ajout des modifications sur la base
 		else : 
 			print("\n Espèce déja enregistrée.")
 
@@ -58,14 +50,6 @@ def completion_assemblie(espece, genre, assemblie, BD, score_busco,connection):
 		cur.execute(requete)
 		print("\n Nouvel assemblage ajouté !")
 		connection.commit() ### Ajout des modifications sur la base
-	else:
-		if assemblie not in liste_assemblage :
-			# print("\nnot in list")
-			specie_row='('+ '\''+assemblie+'\''+ ',' + '\'' +espece+'\'' + ',' + '\''+genre+'\''+',\''+ BD + '\',NULL ,NULL,'+'\''+score_busco+'\')'
-			requete="INSERT INTO assemblie VALUES "+ specie_row
-			cur.execute(requete)
-			print("\n Nouvel assemblage ajouté !")
-			connection.commit() ### Ajout des modifications sur la base
 
 
 ###################### Complétion de la table experience ###########################

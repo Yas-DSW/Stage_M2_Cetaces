@@ -15,14 +15,14 @@ from datetime import datetime
 def my_format_alignment(align1, align2, score, begin, end): ## Code inspirée de Bastien Hervé sur https://www.biostars.org/p/370710/
     s = [score] 
     match=0
-    for a, b in zip(align1[begin:end], align2[begin:end]): 
+    for a, b in zip(align1[begin:end], align2[begin:end]): #### zip fait correspondre à chaque élément d'un string un élément de l'autre string en paramétre
         if a == b:  
             match+=1
     s.append(match)
     return s ### Retourne une liste [score, match]
 
 def align(seq1, seq2, open_gap, extend_gap ):
-	score = pairwise2.align.globalxs(seq1, seq2,open_gap,extend_gap,penalize_end_gaps=(False,False), score_only=True)
+	score = pairwise2.align.globalxs(seq1, seq2,open_gap,extend_gap,penalize_end_gaps=(False,False))
 	return my_format_alignment(score)
 
 
@@ -54,36 +54,34 @@ def align(seq1, seq2, open_gap, extend_gap ):
 ######################################################################### Récupération des données d'entrées ########################################################################################################
 
 
-def recup_donnees(connection):
-	print ("\nrécupération des données de la table gene et la table link ...")
-	cur=connection.cursor()
-	cur.execute("SELECT id from experience;")
-	liste_exp=cur.fetchall() ## Récupération des résultats de la requête sous forme de liste de tuples
-	global experience_ID
-	experience_ID=liste_exp[-1][0]
-	cur.execute("SELECT * FROM gene")
-	global table_gene
-	table_gene= cur.fetchall()
-	cur.execute("SELECT * FROM link")
-	global table_link
-	table_link=cur.fetchall()
+# def recup_donnees(connection):
+# 	print ("\nrécupération des données de la table gene et la table link ...")
+# 	cur=connection.cursor()
+# 	cur.execute("SELECT id from experience;")
+# 	liste_exp=cur.fetchall() ## Récupération des résultats de la requête sous forme de liste de tuples
+# 	cur.execute("SELECT * FROM gene")
+# 	global table_gene
+# 	table_gene= cur.fetchall()
+# 	cur.execute("SELECT * FROM link")
+# 	global table_link
+# 	table_link=cur.fetchall()
 
 
 ########### Conversion du fichier multi fasta en tableau à deux dimensions  ###########
 
 
-def conversion_multifasta(multi_fasta,table_gene,table_link):
+def conversion_multifasta(multi_fasta):
 	global tableau_gene
 	tableau_gene=[]
 
 	## Récupération de l'identifiant du dernier génes entré
-	if len(table_gene)==0: 
-		id_gene=0
-	else :
-		id_gene=int(table_gene[-1][0]) # Sinon id_gene = id max du csv +1
+	# if len(table_gene)==0: 
+	# 	id_gene=0
+	# else :
+	# 	id_gene=int(table_gene[-1][0]) # Sinon id_gene = id max du csv +1
 
 	for record in SeqIO.parse(multi_fasta,"fasta"):### Utilisation de SeqIO de Biopython pour parcourir les séquences fasta contenues dans le multifasta
-		id_gene += 1
+		# id_gene += 1
 		header=str(record.id)# Récupération du header de la séquence fasta en chaîne de caractères.  
 		split_header=header.split('|')### Récupération des informations contenues dans le header
 		nom=split_header[0]
@@ -97,7 +95,8 @@ def conversion_multifasta(multi_fasta,table_gene,table_link):
 		start=liste_position[0]
 		end=liste_position[1]
 
-		gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
+		# gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
+		gene=["",nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
 		tableau_gene.append(gene) ## Stockage des différents génes dans un tableau à deux dimensions
 	# print("tableau gene  : ", tableau_gene)
 	
@@ -118,6 +117,7 @@ def completion_gene(tableau_gene,connection,experience_ID,espece, assemblie_ID):
 
 	for gene in tableau_gene: ##Parcours de la liste des gènes trouvés par le pipeline
 		print("Traitement du géne : ", gene[1], " Assemblage : "+ assemblie_ID + "\n")
+		score_max=0
 		id_max=0
 		sim_max=0
 		length=len(gene)
@@ -139,7 +139,7 @@ def completion_gene(tableau_gene,connection,experience_ID,espece, assemblie_ID):
 			# if pourcentage > sim_max :
 			# 	sim_max=pourcentage
 			# 	id_max=row[1]
-		if sim_max>98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
+		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
 			gene[-1]=id_max
 			gene=tuple(gene)
 			requete="INSERT INTO gene VALUES " + str(gene)+ ';'
@@ -164,5 +164,5 @@ def completion_gene(tableau_gene,connection,experience_ID,espece, assemblie_ID):
 
 def multi_fasta_to_bd(multi_fasta, connection, espece,assemblie_ID): ### fonction d'appelle de toutes les autres fonctions
 	recup_donnees(connection)
-	conversion_multifasta(multi_fasta,table_gene,table_link)
+	conversion_multifasta(multi_fasta)
 	completion_gene(tableau_gene,connection, experience_ID, espece,assemblie_ID)
