@@ -1,0 +1,138 @@
+#################################### Version interaction avec la base de données à la fin ################################
+
+structure de tc : [(ID_gene, ID_A, sequence) …]
+structure de tmf : [[ID,nom,type,famille,etat,start,end,sequence,ID_référent]…]
+structure de link :[(ID_gene, ID_assemblie, ID_experience) …]
+
+
+Entrées : 
+
+Tableau des génes à tester tmf : liste de liste de chaînes de caractères,
+Identifiant de l'assemblage ID_A : chaîne de caractère,
+Espèce de l'assemblage esp,  
+Identifiant de l'experience ID_E : entier, 
+
+
+
+Variables : 
+
+
+Tableau de croisement des génes référents dans une même espéce tc : liste de tuple,
+Identifiant du dernier géne de la table gene IDg : entier,
+liste contenant le score et nombre de match score_match : liste de float,
+Identifiant du gene référent le plus ressemblant au gene test id_max : entier, 
+score du gene référent le plus ressemblant au gene test gr_score_max : entier, 
+longueur du géne à tester lgt : entier, 
+nombre de match entre le géne référent et le géné le test le plus ressemblant nb_match_max : entier,
+liste des génes à commit dans la table gene list_comm_gene : liste de tuple 
+liste des génes à commit dans la table link list_comm_link : liste de tuple
+
+### Récupération de la table de croisement des génes référents dans une même espéce : 
+
+tc = SELECT link.ID_gene, link.ID_A, gene.sequence FROM link, gene WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece=esp) ### récup ID_assemblage de l'espece d'intérêt uniquement
+AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) #### récup gene étant des génes référents
+AND link.ID_gene=gene.ID AND assemblie.identifiant=link.id_assemblie; ### croisement entre tables
+
+
+#### Récupération du dernier identifiant de la table gene
+
+IDg= SELECT max(id_gene) FROM gene
+
+#### Traitement et ajout des génes des nouveaux génes
+
+Pour chaque gt de tmf :
+	gr_id_max=0
+	gr_score_max=0
+	lgt=len(gt)
+	Pour chaque gr de tc : 
+		score_match= align(gr.sequence,gc.sequence)
+		Si score_match[0]> gr_score_max :
+		   gr_score_max=score_match[0]
+		   nb_match_max=score_nbmatch[1]
+		   gr_ID_max=gr.ID_gene
+		Fin Si
+	Fin Pour
+	sim_max=nb_match_max/lgt
+	IDg=IDg+1
+
+	Si sim_max> 0.98 :
+		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,gr_ID_max) à list_comm_gene
+		Ajout du tuple (IDg,ID_A, ID_E) à list_comm_link
+	Sinon : 
+		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,ID) à list_comm_gene
+		Ajout du tuple (IDg,ID_A, ID_E) à list_comm_link
+		Ajout du tuple (IDg,ID_A,gt.sequence) à tc
+	Fin Si
+Fin Pour
+
+Ajout de list_comm_gene à la table gene
+Ajout de list_comm_link à la table link
+
+
+
+#################################### Version interaction avec la base de données permanante##############################
+
+structure de tc : [(ID_gene, ID_A, sequence) …]
+structure de tmf : [[ID,nom,type,famille,etat,start,end,sequence,ID_référent]…]
+structure de link :[(ID_gene, ID_assemblie, ID_experience) …]
+
+
+Entrées : 
+
+Tableau des génes à tester tmf : liste de liste de chaînes de caractères,
+Identifiant de l'assemblage ID_A : chaîne de caractère,
+Espèce de l'assemblage esp,  
+Identifiant de l'experience ID_E : entier, 
+
+
+
+Variables : 
+
+
+Tableau de croisement des génes référents dans une même espéce tc : liste de tuple,
+Identifiant du dernier géne de la table gene IDg : entier,
+liste contenant le score et nombre de match score_match : liste de flotant,
+Identifiant du gene référent le plus ressemblant au gene test id_max : entier, 
+score du gene référent le plus ressemblant au gene test gr_score_max : entier, 
+longueur du géne à tester lgt : entier, 
+nombre de match entre le géne référent et le géné le test le plus ressemblant nb_match_max : entier,
+liste des génes à commit dans la table gene list_comm_gene : liste de tuple 
+liste des génes à commit dans la table link list_comm_link : liste de tuple
+
+
+#### Récupération du dernier identifiant de la table gene
+
+IDg= SELECT max(id_gene) FROM gene
+
+#### Traitement et ajout des génes des nouveaux génes
+
+Pour chaque gt de tmf :
+
+### Récupération/mise à jour de la table de croisement des génes référents dans une même espéce : 
+
+tc = SELECT link.ID_gene, link.ID_A, gene.sequence FROM link, gene WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece=esp) ### récup ID_assemblage de l'espece d'intérêt uniquement
+AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) #### récup gene étant des génes référents
+AND link.ID_gene=gene.ID AND assemblie.identifiant=link.id_assemblie; ### croisement entre tables
+
+	gr_id_max=0
+	gr_score_max=0
+	lgt=len(gt)
+	Pour chaque gr de tc : 
+		score_match= align(gr.sequence,gc.sequence)
+		Si score_match[0]> gr_score_max :
+		   gr_score_max=score_match[0]
+		   nb_match_max=score_nbmatch[1]
+		   gr_ID_max=gr.ID_gene
+		Fin Si
+	Fin Pour
+	sim_max=nb_match_max/lgt
+	IDg=IDg+1
+
+	Si sim_max> 0.98 :
+		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,gr_ID_max) à table gene
+		Ajout du tuple (IDg,ID_A, ID_E) à table link
+	Sinon : 
+		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,ID) à table gene
+		Ajout du tuple (IDg,ID_A, ID_E) à table link
+	Fin Si
+Fin Pour
