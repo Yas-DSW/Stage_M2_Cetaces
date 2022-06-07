@@ -43,6 +43,7 @@ IDg= SELECT max(id_gene) FROM gene
 Pour chaque gt de tmf :
 	gr_id_max=0
 	gr_score_max=0
+	sim_max=0
 	lgt=len(gt)
 	Pour chaque gr de tc : 
 		score_match= align(gr.sequence,gc.sequence)
@@ -57,12 +58,11 @@ Pour chaque gt de tmf :
 
 	Si sim_max> 0.98 :
 		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,gr_ID_max) à list_comm_gene
-		Ajout du tuple (IDg,ID_A, ID_E) à list_comm_link
 	Sinon : 
-		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,ID) à list_comm_gene
-		Ajout du tuple (IDg,ID_A, ID_E) à list_comm_link
+		Ajout du tuple (IDg,gt.nom,'gene OR',gt.famille,gt.etat,gt.start,gt.end,gt.sequence,IDg) à list_comm_gene
 		Ajout du tuple (IDg,ID_A,gt.sequence) à tc
 	Fin Si
+	Ajout du tuple (IDg,ID_A, ID_E) à list_comm_link
 Fin Pour
 
 Ajout de list_comm_gene à la table gene
