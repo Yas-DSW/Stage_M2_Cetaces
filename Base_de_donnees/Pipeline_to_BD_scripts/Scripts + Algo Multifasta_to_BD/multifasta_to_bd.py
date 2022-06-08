@@ -124,9 +124,7 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 
 	cur=connection.cursor()
 	
-	requete="SELECT distinct link.ID_experience,link.ID_gene, gene.nom, gene.sequence, gene.reference FROM link,gene,assemblie WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='novaeangliae') AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) ;"
-	# requete= "SELECT distinct link.ID_experience,link.ID_gene, gene.nom, gene.sequence, gene.reference FROM link,gene,assemblie WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='novaeangliae') AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) ;"
-	print (requete)
+	requete="SELECT distinct link.ID_experience,link.ID_gene, gene.nom, gene.sequence, gene.reference FROM link,gene,assemblie WHERE link.ID_assemblie IN (SELECT assemblie.identifiant FROM assemblie WHERE espece='"+ espece +"') AND link.ID_gene IN (SELECT gene.ID FROM gene WHERE gene.ID= gene.reference) AND link.ID_gene=gene.ID AND link.ID_assemblie=assemblie.identifiant ;"
 	cur.execute(requete)
 	tc=cur.fetchall()
 	IDg=0 #### Initialisation de IDg
@@ -139,16 +137,15 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 	print('\n_________________________________________________________________________\n')
 
 	for gt in tmf: ##Parcours de la liste des gènes trouvés par le pipeline
-		print("Traitement du géne : ", gt[1], " Assemblage : "+ ID_A + "\n")
+		print("\nTraitement du géne : ", gt[1], " Assemblage : "+ ID_A + "\n")
 		gr_id_max=0
 		gr_score_max=0
 		sim_max=0
 		nb_match=0
 		IDg+=1
 		lgt=len(gt)
-		# print("tc :",tc)
 		for gr in tc:# Parcours des gènes de références
-			print("comparaison entre :", gt[1] , " et ", gr[2])
+			print("Comparaison entre :", gt[1] , " et ", gr[2] , "…")
 			gr_sequence=re.sub("(\s+)","",gr[-2])### élimination des caractéres invisibles pouvant êre contenu dans les séquences importés depuis la base. 
 			# pourcentage=random.randrange(98,100)
 			score_match=align( gt[-2], gr[-2] , -1 ,-1)
@@ -196,7 +193,6 @@ BD=sys.argv[2] ## Récupération de la base de données sur laquelle les donnée
 esp_genre=nom_complet.split("_")
 
 espece=esp_genre[1]
-print("espèce :")
 genre=esp_genre[0]
 
 assemblie_ID= nom_complet +'_'+ BD
