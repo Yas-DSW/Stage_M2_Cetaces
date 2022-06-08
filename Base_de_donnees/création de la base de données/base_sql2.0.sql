@@ -6,74 +6,73 @@ DROP TABLE IF EXISTS gene CASCADE;
 DROP TABLE IF EXISTS experience CASCADE;
 DROP TABLE IF EXISTS assemblie CASCADE;
 DROP TABLE IF EXISTS link CASCADE;
-DROP TABLE IF EXISTS organisme CASCADE;
+DROP TABLE IF EXISTS organism CASCADE;
 
 --Creation des types utilisé dans les tables
 
 CREATE TYPE nvx as enum ('Scaffold', 'complet'); 
-CREATE TYPE cptm as enum ('trés social','social', 'moyennement social','solitaire');
-CREATE TYPE etats as enum ('pseudogéne','fonctionnel');
+CREATE TYPE etats as enum ('pseudogène','fonctionnel');
 
 
 --Creation des tables et relations
 
-CREATE TABLE organisme (
-	espece varchar(100),
-	genre varchar(100),
-	micro_ordre varchar(100),
-	ordre varchar(100),
-	habitat varchar(100),
-	alimentation varchar(100),
-	comportement_social cptm,
-	region varchar(150),
+CREATE TABLE organism(
+	"Espèce" varchar(100),
+	"Genre" varchar(100),
+	"Micro ordre" varchar(100),
+	"Ordre" varchar(100),
+	"Habitat" varchar(100),
+	"Alimentation" varchar(100),
+	"Comportement social" varchar(100),
+	"Région" varchar(150),
 	CONSTRAINT 
-		pk_organisme PRIMARY KEY (espece,genre)
+		pk_organisme PRIMARY KEY ("Espèce","Genre")
 );
 
 
 CREATE TABLE assemblie(
-	identifiant varchar(200) PRIMARY KEY,
-	espece varchar (100),
-	genre varchar (100), 
-	base_de_donnee varchar(100),
-	date_de_publication date,
-	niveau_assemblage  nvx,
-	score_busco varchar(120),
+	"ID" varchar(200) PRIMARY KEY,
+	"Espèce" varchar (100),
+	"Genre" varchar (100), 
+	"Base de donnee" varchar(100),
+	"Date de publication" date,
+	"Niveau d\'assemblage" nvx,
+	"Score_busco" varchar(120),
 	CONSTRAINT
-		fk_esp FOREIGN KEY (espece,genre) REFERENCES organisme(espece,genre)
+		fk_esp FOREIGN KEY ("Espèce","Genre") REFERENCES organism ("Espèce","Genre")
 );
 
 
 CREATE TABLE experience(
-	ID SERIAL PRIMARY KEY,
-	pipeline varchar(200),
-	paramétres text
+	"ID" SERIAL PRIMARY KEY,
+	"Pipeline" varchar(200),
+	"Paramétres" text
 );
 
 CREATE TABLE gene(
-	ID SERIAL PRIMARY KEY,
-	Nom text,
-	Superfamille varchar(100),
-	famille varchar(10),
-	etat etats,
-	début int,
-	fin int,
-	sequence text,
-	reference int
+	"ID" int PRIMARY KEY,
+	"Nom" text,
+	"Superfamille" varchar(100),
+	"Famille" varchar(10),
+	"Etat" etats,
+	"Début" int,
+	"Fin" int,
+	"Séquence" text,
+	"référence" int
 );
 
 CREATE TABLE link(
-	ID_assemblie varchar(200),
-	ID_experience int,
-	ID_gene int,
+	"ID assemblie" varchar(200),
+	"ID experience" int,
+	"ID gène" int,
 CONSTRAINT 
-	pk_link PRIMARY KEY ( ID_assemblie, ID_experience, ID_gene),
+	pk_link PRIMARY KEY ( "ID assemblie", "ID experience","ID gène"),
 CONSTRAINT
-	fk_link_assemblie FOREIGN KEY (ID_assemblie) REFERENCES assemblie(identifiant),
+	fk_link_assemblie FOREIGN KEY ("ID assemblie") REFERENCES assemblie("ID"),
 CONSTRAINT 
-	fk_link_experience FOREIGN KEY (ID_experience) REFERENCES experience(ID),
+	fk_link_experience FOREIGN KEY ("ID experience") REFERENCES experience("ID"),
 CONSTRAINT 
-	fk_link_gene FOREIGN KEY (ID_gene) REFERENCES gene(ID)
+	fk_link_gene FOREIGN KEY ("ID gène") REFERENCES gene("ID")
 );
 
 
