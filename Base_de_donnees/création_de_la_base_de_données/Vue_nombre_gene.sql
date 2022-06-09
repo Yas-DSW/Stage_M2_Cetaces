@@ -1,7 +1,7 @@
 SELECT assemblie."Genre", 
 assemblie."Espèce", 
 count(gene.*) as "nb gène",
-(SELECT count(*) as "nb pseudogènes" FROM gene WHERE gene."Etat"='pseudogéne'), 
+(SELECT count(*) as "nb pseudogènes" FROM gene WHERE gene."Etat"='pseudogène'), 
 (SELECT count(*) as "nb gène fonctionnel" FROM gene WHERE gene."Etat"='fonctionnel'),
 (SELECT count(gene.*) as "OR1" FROM gene WHERE gene."Famille"='OR1'),
 (SELECT count(gene.*) as "OR2" FROM gene WHERE gene."Famille"='OR2'),

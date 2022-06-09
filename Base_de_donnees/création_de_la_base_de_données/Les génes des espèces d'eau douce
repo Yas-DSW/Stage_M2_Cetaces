@@ -1,0 +1,29 @@
+Les génes des espèces d'eau douce
+
+
+
+Les espèces d'eau douce : 
+
+SELECT "Espèce", "Genre"  
+FROM organism 
+WHERE "Habitat" = 'Eau douce' ;
+
+
+Les assemblages des espèces d'eau douce: 
+
+SELECT "ID"
+FROM assemblie
+WHERE assemblie."Espèce" in (SELECT "Espèce", "Genre" FROM organism WHERE "Habitat" = 'Eau douce') ;
+
+
+
+
+SELECT gene."ID", gene."nom" 
+FROM gene
+WHERE gene."ID" in (
+SELECT gene."ID" 
+FROM gene,assemblie  
+WHERE gene."ID"= link."ID gène" AND link."ID assemblie" in (SELECT "ID"
+FROM assemblie
+WHERE assemblie."Espèce" in (SELECT "Espèce", "Genre" FROM organism WHERE "Habitat" = 'Eau douce') ;
+

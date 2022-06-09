@@ -1,0 +1,31 @@
+-- ID, Espèce et Nom des assemblages séquencés/assemblés avant 2017 et contenant des gènes de la famille 10 : 
+
+
+SELECT assemblie."ID" as "ID", assemblie."Genre", assemblie."Espèce" 
+FROM assemblie,gene,link 
+WHERE assemblie."ID" in (SELECT "ID" FROM assemblie WHERE "Date de publication" < '01-01-2017')
+AND link."ID assemblie" = assemblie."ID"
+AND gene."ID" in (SELECT gene."ID" FROM gene WHERE "Famille" = 'OR10')
+AND link."ID gène"=gene."ID";
+
+
+
+-- ##Assemblages avant 2017 : 
+
+-- SELECT "ID" FROM assemblie WHERE "Date de publication" < '01-01-2017' ;
+
+
+-- Lien entre link et assemblie :
+
+-- link."ID assemblie" = assemblie."ID";
+
+
+-- Lien entre link et gene : 
+
+-- link."ID gène"=gene."ID"
+
+-- gènes de la famille 10: 
+-- SELECT * FROM gene WHERE Famille = "OR10";
+
+
+

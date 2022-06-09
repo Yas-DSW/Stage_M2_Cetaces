@@ -17,8 +17,8 @@ CREATE TYPE etats as enum ('pseudogène','fonctionnel');
 --Creation des tables et relations
 
 CREATE TABLE organism(
-	"Espèce" varchar(100),
 	"Genre" varchar(100),
+	"Espèce" varchar(100),
 	"Micro ordre" varchar(100),
 	"Ordre" varchar(100),
 	"Habitat" varchar(100),
@@ -32,8 +32,8 @@ CREATE TABLE organism(
 
 CREATE TABLE assemblie(
 	"ID" varchar(200) PRIMARY KEY,
-	"Espèce" varchar (100),
 	"Genre" varchar (100), 
+	"Espèce" varchar (100),
 	"Base de donnee" varchar(100),
 	"Date de publication" date,
 	"Niveau d\'assemblage" nvx,
@@ -58,7 +58,7 @@ CREATE TABLE gene(
 	"Début" int,
 	"Fin" int,
 	"Séquence" text,
-	"référence" int
+	"Référence" int
 );
 
 CREATE TABLE link(

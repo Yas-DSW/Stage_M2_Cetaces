@@ -34,45 +34,6 @@ def align(seq1, seq2, open_gap, extend_gap ):
 
 
 
-
-
-# def sim(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) : ### Définition de la fonction de calcul du pourcentage de similarité entre deux séquences
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time matrice begin :", current_time)
-# 	matrice.matrice(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) #### Calcul de la matrice de score entre les deux séquences
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time matrice end:", current_time)
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time  start backtracking:", current_time)
-# 	backtracking.backtracking(seq1,seq2,gap_int,gap_ext,match,missmatch,id_gene1,id_gene2) ### Etape de backtracking permettant de connaitre le nombre de match
-# 	print("backtracking terminé !\n")
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time backtracking end :", current_time) 
-# 	pourc=calcul_similarité.similarite(id_gene1,id_gene2) ### Calcul de la similarité entre les sséquence (score pondéré par la longueur)
-# 	return pourc
-
-
-
-######################################################################### Récupération des données d'entrées ########################################################################################################
-
-
-# def recup_donnees(connection):
-# 	print ("\nrécupération des données de la table gene et la table link ...")
-# 	cur=connection.cursor()
-# 	cur.execute("SELECT id from experience;")
-# 	liste_exp=cur.fetchall() ## Récupération des résultats de la requête sous forme de liste de tuples
-# 	cur.execute("SELECT * FROM gene")
-# 	global table_gene
-# 	table_gene= cur.fetchall()
-# 	cur.execute("SELECT * FROM link")
-# 	global table_link
-# 	table_link=cur.fetchall()
-
-
 ########### Conversion du fichier multi fasta en tableau à deux dimensions  ###########
 
 
@@ -96,13 +57,13 @@ def conversion_multifasta(multi_fasta):
 			etat="pseudogène"
 		else:
 			etat="fonctionnel"
-		position= nom.split(':')
-		liste_position= position[1].split("-")
-		start=liste_position[0]
-		end=liste_position[1]
+		# position= nom.split(':')
+		# liste_position= position[1].split("-")
+		# start=liste_position[0]
+		# end=liste_position[1]
 
 		# gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
-		gene=["",nom,'gène OR',famille,etat,int(start),int(end),str(record.seq),"" ]
+		gene=["",nom,'gène OR',famille,etat, "NULL","NULL",str(record.seq),"" ]
 		tableau_gene.append(gene) ## Stockage des différents génes dans un tableau à deux dimensions
 	# print("tableau gene  : ", tableau_gene)
 	
@@ -138,7 +99,7 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 
 	for gt in tmf: ##Parcours de la liste des gènes trouvés par le pipeline
 		print('\n_________________________________________________________________________\n')
-
+		
 		print("\nTraitement du géne : ", gt[1], " Assemblage : "+ ID_A + "\n")
 		gr_id_max=""
 		gr_score_max=0
@@ -159,20 +120,20 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 				nb_match=score_match[1]
 			sim_max=nb_match/lgt
 
-		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence	
-				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène_OR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
+		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
+				print("\n Gène référent déja présent\n")	
+				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+",'"++"'," str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
 		else :
-				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène_OR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"
+				print("\n Gène \n")
+				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gèneOR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"
 		if gt == tmf[-1]:#### 
 			list_comm_gene+=";"
 			list_comm_link+="('"+str(ID_A)+"',"+str(ID_E)+","+str(IDg)+");"
 		else :
 			list_comm_gene+=","
 			list_comm_link+="('"+str(ID_A)+"',"+str(ID_E)+","+str(IDg)+"),"
-		# print(list_comm_gene)
 
 
-	print('list_comm_gene :', list_comm_gene )
 	cur.execute(list_comm_gene)
 	connection.commit()
 
@@ -200,9 +161,9 @@ esp_genre=nom_complet.split("_")
 espece=esp_genre[1]
 genre=esp_genre[0]
 
-assemblie_ID= nom_complet +'_'+ BD
+assemblie_ID= sys.argv[3]
 
-score_busco=sys.argv[3]
+# score_busco=sys.argv[3]
 multi_fasta=sys.argv[4]
 experience_ID=sys.argv[5]
 
