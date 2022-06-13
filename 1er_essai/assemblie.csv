@@ -1,0 +1,10 @@
+ID,Genre,Espèce,Base de donnee,Date de publication,Niveau d\'assemblage,Score_busco
+Gènes trouvé sur NCBI Globi melas,Globicephala,melas,NCBI,,,
+Gènes trouvé sur NCBI Tur truncatus,Tursiop,truncatus,NCBI,,,
+Gènes trouvé sur NCBI Meg novaeangliae,Megaptera,novaeangliae,NCBI,,,
+GCA_006547405.1,Globicephala,melas,NCBI,2019-07-01,Scaffold,""
+ASM654740v1,Globicephala,melas,DNAZoo,,,
+NIST_Tur_tru_v1,Tursiop,truncatus,DNAZoo,,,
+CM022274.1,Tursiop,truncatus,NCBI,,,
+GCA_004329385.1,Megaptera,novaeangliae,NCBI,,,
+Megaptera_novaeangliae_HiC,Megaptera,novaeangliae,DNAZoo,,,

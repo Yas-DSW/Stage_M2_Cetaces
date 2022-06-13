@@ -22,7 +22,7 @@ count(gene.*) as "nb gène",
 (SELECT count(gene.*) as "OR55" FROM gene WHERE gene."Famille"='OR55'),
 (SELECT count(gene.*) as "OR56" FROM gene WHERE gene."Famille"='OR56')
 FROM gene,assemblie,link
-WHERE gene."ID"=link."ID gène" AND assemblie."ID"=link."ID assemblie"
+WHERE gene."ID"=link."ID gène" AND assemblie."ID"=link."ID assemblie" AND assemblie."Genre"= 'Globicephala'
 GROUP BY assemblie."Espèce", assemblie."Genre";
 
 

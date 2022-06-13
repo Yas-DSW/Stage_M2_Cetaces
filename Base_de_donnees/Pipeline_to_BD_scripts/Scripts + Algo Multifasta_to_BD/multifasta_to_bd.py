@@ -200,9 +200,9 @@ esp_genre=nom_complet.split("_")
 espece=esp_genre[1]
 genre=esp_genre[0]
 
-assemblie_ID= nom_complet +'_'+ BD
+# assemblie_ID= nom_complet +'_'+ BD
+assemblie_ID=sys.argv[3]
 
-score_busco=sys.argv[3]
 multi_fasta=sys.argv[4]
 experience_ID=sys.argv[5]
 

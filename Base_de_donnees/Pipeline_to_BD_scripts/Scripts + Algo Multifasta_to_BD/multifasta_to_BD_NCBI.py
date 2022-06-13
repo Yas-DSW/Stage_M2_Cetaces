@@ -57,13 +57,13 @@ def conversion_multifasta(multi_fasta):
 			etat="pseudogène"
 		else:
 			etat="fonctionnel"
-		# position= nom.split(':')
-		# liste_position= position[1].split("-")
-		# start=liste_position[0]
-		# end=liste_position[1]
+		position= nom.split(':')
+		liste_position= position[1].split("-")
+		start=liste_position[0]
+		end=liste_position[1]
 
-		# gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
-		gene=["",nom,'gène OR',famille,etat, "NULL","NULL",str(record.seq),"" ]
+		gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
+		# gene=["",nom,'gène OR',famille,etat, "NULL","NULL",str(record.seq),"" ]
 		tableau_gene.append(gene) ## Stockage des différents génes dans un tableau à deux dimensions
 	# print("tableau gene  : ", tableau_gene)
 	
@@ -122,7 +122,7 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 
 		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
 				print("\n Gène référent déja présent\n")	
-				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+",'"++"'," str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
+				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+",'gèneOR',"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
 		else :
 				print("\n Gène \n")
 				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gèneOR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"
