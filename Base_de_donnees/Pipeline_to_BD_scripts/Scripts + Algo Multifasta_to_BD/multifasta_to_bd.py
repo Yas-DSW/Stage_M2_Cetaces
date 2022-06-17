@@ -172,7 +172,6 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 		# print(list_comm_gene)
 
 
-	print('list_comm_gene :', list_comm_gene )
 	cur.execute(list_comm_gene)
 	connection.commit()
 
