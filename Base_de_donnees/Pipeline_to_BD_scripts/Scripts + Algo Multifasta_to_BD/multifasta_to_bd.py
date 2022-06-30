@@ -33,46 +33,6 @@ def align(seq1, seq2, open_gap, extend_gap ):
 
 
 
-
-
-
-# def sim(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) : ### Définition de la fonction de calcul du pourcentage de similarité entre deux séquences
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time matrice begin :", current_time)
-# 	matrice.matrice(seq1,seq2,match,missmatch,gap_ext,gap_int,id_gene1,id_gene2) #### Calcul de la matrice de score entre les deux séquences
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time matrice end:", current_time)
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time  start backtracking:", current_time)
-# 	backtracking.backtracking(seq1,seq2,gap_int,gap_ext,match,missmatch,id_gene1,id_gene2) ### Etape de backtracking permettant de connaitre le nombre de match
-# 	print("backtracking terminé !\n")
-# 	now =datetime.now()
-# 	current_time=now.strftime("%H:%M:%S")
-# 	print("Curent time backtracking end :", current_time) 
-# 	pourc=calcul_similarité.similarite(id_gene1,id_gene2) ### Calcul de la similarité entre les sséquence (score pondéré par la longueur)
-# 	return pourc
-
-
-
-######################################################################### Récupération des données d'entrées ########################################################################################################
-
-
-# def recup_donnees(connection):
-# 	print ("\nrécupération des données de la table gene et la table link ...")
-# 	cur=connection.cursor()
-# 	cur.execute("SELECT id from experience;")
-# 	liste_exp=cur.fetchall() ## Récupération des résultats de la requête sous forme de liste de tuples
-# 	cur.execute("SELECT * FROM gene")
-# 	global table_gene
-# 	table_gene= cur.fetchall()
-# 	cur.execute("SELECT * FROM link")
-# 	global table_link
-# 	table_link=cur.fetchall()
-
-
 ########### Conversion du fichier multi fasta en tableau à deux dimensions  ###########
 
 
