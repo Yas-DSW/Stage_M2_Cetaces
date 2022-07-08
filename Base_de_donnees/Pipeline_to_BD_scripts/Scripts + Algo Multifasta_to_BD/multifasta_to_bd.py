@@ -107,7 +107,9 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 		IDg+=1
 		lgt=len(gt[-2])
 		
+		
 		for gr in tc:# Parcours des gènes de références
+			lgr=len(gr[2])
 			print("Comparaison entre :", gt[1] , " et ", gr[1] , "…")
 			gr_sequence=re.sub("(\s+)","",gr[1])### élimination des caractéres invisibles pouvant être contenu dans les séquences importés depuis la base. 
 			# pourcentage=random.randrange(98,100)
@@ -117,9 +119,12 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 				gr_id_max=gr[0]
 				gr_score_max=score_match[0]
 				nb_match=score_match[1]
-			sim_max=nb_match/lgt
+			if lgt<lgr:
+				sim_max=nb_match/lgt
+			else :
+				sim_max=nb_match/lgr
 
-		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence	
+		if sim_max>0.90:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence	
 				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène_OR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
 		else :
 				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène_OR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"

@@ -63,6 +63,10 @@ for fin_req2 in fin_req :
 	cur.execute(requete)
 	DNAZoo=cur.fetchall()
 
+	requete="SELECT distinct(\"Référence\") FROM gene Where \"ID\" in (SELECT \"ID gène\" FROM link WHERE \"ID assemblie\"= \'"+TNCBI+"\' "+fin_req2+");"
+	cur.execute(requete)
+	tncbi=cur.fetchall()
+
 
 
 	intersection=[]
@@ -75,13 +79,26 @@ for fin_req2 in fin_req :
 
 	inter_NCBI_DNAZoo=[] 
 
-	for b in NCBI :  
+	for y in NCBI :  
 			for c in DNAZoo :
-				if (b==c) and b not in intersection :
-					inter_NCBI_DNAZoo.append(b)
+				if (y==c) and y not in intersection :
+					inter_NCBI_DNAZoo.append(y)
+
+					
+	inter_TNCBI_DNAZoo=[] 
+
+	for x in NCBI :  
+			for c in tncbi :
+				if (x==c) and x not in intersection :
+					inter_TNCBI_DNAZoo.append(x)
 
 
-	print("\n Communs NCBI et DNAZoo:", inter_NCBI_DNAZoo)
+	print ("1:",len(intersection), "\n2:",len(inter_TNCBI_DNAZoo), "\n3:",len(inter_NCBI_DNAZoo))
+	for d in NCBI: 
+		if d not in inter_NCBI_DNAZoo and d not in intersection and d not in inter_TNCBI_DNAZoo: 
+			print(d)
+
+
 
 
 	## Construction du diagramme de Venn avec venn3 de matplotlib_venn

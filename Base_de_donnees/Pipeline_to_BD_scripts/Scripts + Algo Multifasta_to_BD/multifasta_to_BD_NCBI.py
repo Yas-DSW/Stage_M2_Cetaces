@@ -52,17 +52,20 @@ def conversion_multifasta(multi_fasta):
 		header=str(record.id)# Récupération du header de la séquence fasta en chaîne de caractères.  
 		split_header=header.split('|')### Récupération des informations contenues dans le header
 		nom=split_header[0]
-		famille=split_header[1]
+		# famille=split_header[1]
+		famille='NULL'
 		if len(split_header)==3 : ### L'état de pseudogéne apparait dans le header contrairement à l'état fonctionnel 
 			etat="pseudogène"
 		else:
 			etat="fonctionnel"
 		position= nom.split(':')
-		liste_position= position[1].split("-")
-		start=liste_position[0]
-		end=liste_position[1]
+		# liste_position= position[1].split("-")
+		# start=liste_position[0]
+		# end=liste_position[1]
+		start="NULL"
+		end="NULL"
 
-		gene=[id_gene,nom,'géne OR',famille,etat,int(start),int(end),str(record.seq),"" ]
+		gene=["",nom,'géne OR',famille,etat,start,end,str(record.seq),"" ]
 		# gene=["",nom,'gène OR',famille,etat, "NULL","NULL",str(record.seq),"" ]
 		tableau_gene.append(gene) ## Stockage des différents génes dans un tableau à deux dimensions
 	# print("tableau gene  : ", tableau_gene)
@@ -108,7 +111,9 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 		IDg+=1
 		lgt=len(gt[-2])
 		
+		
 		for gr in tc:# Parcours des gènes de références
+			lgr=len(gr[2])
 			print("Comparaison entre :", gt[1] , " et ", gr[1] , "…")
 			gr_sequence=re.sub("(\s+)","",gr[1])### élimination des caractéres invisibles pouvant être contenu dans les séquences importés depuis la base. 
 			# pourcentage=random.randrange(98,100)
@@ -118,14 +123,17 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 				gr_id_max=gr[0]
 				gr_score_max=score_match[0]
 				nb_match=score_match[1]
-			sim_max=nb_match/lgt
+			if lgt<lgr:
+				sim_max=nb_match/lgt
+			else :
+				sim_max=nb_match/lgr
 
 		if sim_max>0.98:## Géne de référence similaire à 98 % existant. Le géne de la table devient la référence
 				print("\n Gène référent déja présent\n")	
-				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+",'gèneOR',"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
+				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène OR',"+ str(gt[3])+",'"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(gr_id_max)+")"
 		else :
 				print("\n Gène \n")
-				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gèneOR','"+ str(gt[3])+"','"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"
+				list_comm_gene+="("+str(IDg)+",'"+ str(gt[1])+"','gène OR',"+ str(gt[3])+",'"+ str(gt[4])+"'," +str(gt[5])+","+ str(gt[6])+",'"+str(gt[7])+"',"+str(IDg)+")"
 		if gt == tmf[-1]:#### 
 			list_comm_gene+=";"
 			list_comm_link+="('"+str(ID_A)+"',"+str(ID_E)+","+str(IDg)+");"
@@ -133,10 +141,11 @@ def completion_gene(tmf,connection,ID_E,esp, ID_A):
 			list_comm_gene+=","
 			list_comm_link+="('"+str(ID_A)+"',"+str(ID_E)+","+str(IDg)+"),"
 
-
+	print("list_comm_gene", list_comm_gene)
 	cur.execute(list_comm_gene)
-	connection.commit()
+	connection.commit()	
 
+	print("list_comm_linnk", list_comm_link)
 	cur.execute(list_comm_link)
 	connection.commit()
 
